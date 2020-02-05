@@ -23,6 +23,7 @@ public class VentanaJuego extends javax.swing.JFrame {
     
     int filasMarcianos = 10;
     int columnasMarcianos = 10;
+    int contador = 0;
     
     BufferedImage buffer = null;
     
@@ -33,7 +34,7 @@ public class VentanaJuego extends javax.swing.JFrame {
     Timer temporizador = new Timer(10, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-           //TODO: codigo de la animacion
+           bucleDelJuego();
         }
     });
     
@@ -64,6 +65,18 @@ public class VentanaJuego extends javax.swing.JFrame {
         Graphics2D g2 = (Graphics2D) buffer.getGraphics();
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, ANCHOPANTALLA, ALTOPANTALLA);
+        
+        contador++;
+        
+        if(contador < 50){
+            g2.drawImage(miMarciano.imagen1, 10, 10, null);
+        }
+        else if (contador < 100){
+            g2.drawImage(miMarciano.imagen2, 10, 10, null);
+        }
+        else{
+            contador=0;
+        }
 
         g2.drawImage(miMarciano.imagen1, 10, 10, null);
         
