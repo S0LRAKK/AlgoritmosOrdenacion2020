@@ -9,81 +9,83 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.Timer;
 
 /**
  *
- * @author Carlos
+ * @author jorgecisneros
  */
 public class VentanaJuego extends javax.swing.JFrame {
     
-    static int ANCHOPANTALLA = 800;
-    static int ALTOPANTALLA = 600;
+    static int ANCHOPANTALLA=800;
+    static int ALTOPANTALLA=600;
     
-    int filasMarcianos = 10;
-    int columnasMarcianos = 10;
-    int contador = 0;
+    int filasMarcianos=5;
+    int columnasMarcianos=10;
+    int contador=0;
     
-    BufferedImage buffer = null;
+    BufferedImage buffer=null;
     
-    //bucle de animacion del juego
-    //en este caso, es un hilo de ejecucion nuevo que se encarga
-    //de refrescar el contenido de la pantalla        
-    
-    Timer temporizador = new Timer(10, new ActionListener() {
+    Timer temporizador=new Timer(10, new ActionListener() {//bucle de animacion del juego. refresca el contenido de la pantalla
         @Override
-        public void actionPerformed(ActionEvent e) {
-           bucleDelJuego();
-        }
+        public void actionPerformed(ActionEvent ae) {
+            //TODO: codigo de animacion
+            bucleJuego();
+        }      
     });
+    
+    Marciano marciano=new Marciano(ANCHOPANTALLA);//inicializo el marciano
+    Nave miNave = new Nave();
+    Disparo miDisparo = new Disparo();
+    
     
     /**
      * Creates new form VentanaJuego
      */
-    Marciano miMarciano = new Marciano (ANCHOPANTALLA);
-    
     public VentanaJuego() {
-        initComponents();
-        setSize(ANCHOPANTALLA, ALTOPANTALLA);
         
-        buffer = (BufferedImage) jPanel1.createImage(ANCHOPANTALLA, ALTOPANTALLA);
+        initComponents();
+        
+        setSize(ANCHOPANTALLA, ALTOPANTALLA);
+        jPanel1.setSize(ANCHOPANTALLA, ALTOPANTALLA);
+        buffer=(BufferedImage) jPanel1.createImage(ANCHOPANTALLA, ALTOPANTALLA);//inicializo el buffer
         buffer.createGraphics();
         
-        
-        //arranco el temporizador para que empiece el juego
-        temporizador.start();
-        
+        temporizador.start();//arranco el temporizador
+        miNave.posX = ANCHOPANTALLA /2 - miNave.imagen.getWidth(this)/2;
+        miNave.posY = ALTOPANTALLA - 100;
         
         
     }
     
-    private void bucleDelJuego(){
-        //este metodo gobierna el redibujado de los objetos en el jpanel1
+    private void bucleJuego() {//redibuja los objetos en el jPanel1
         
-        //primero borro todo lo que hay en el buffer
-        Graphics2D g2 = (Graphics2D) buffer.getGraphics();
-        g2.setColor(Color.BLACK);
+        Graphics2D g2=(Graphics2D) buffer.getGraphics();//borro todo lo que ahi en el buffer
+        
+        g2.setColor(Color.BLACK);//doy el color negro a la pantalla
         g2.fillRect(0, 0, ANCHOPANTALLA, ALTOPANTALLA);
-        
+        ///////////////////////////////////////////////////
         contador++;
-        
-        if(contador < 50){
-            g2.drawImage(miMarciano.imagen1, 10, 10, null);
+        if(contador<50){
+            g2.drawImage(marciano.imagen1, 10, 10, null);//dibujo el marciano1
         }
-        else if (contador < 100){
-            g2.drawImage(miMarciano.imagen2, 10, 10, null);
+        else if(contador<100){
+            g2.drawImage(marciano.imagen2, 10, 10, null);//dibujo el marciano2
         }
         else{
             contador=0;
         }
-
-        g2.drawImage(miMarciano.imagen1, 10, 10, null);
-        
-        //dibujo de golpe todo el buffer sobre el jpanel1
-        g2 = (Graphics2D) jPanel1.getGraphics();
+        //dibujo la nave
+        g2.drawImage(miNave.imagen, miNave.posX, miNave.posY, null);
+        g2.drawImage(miDisparo.imagen, miDisparo.posX, miDisparo.posY, null);
+        miNave.mueve();
+        miDisparo.mueve();
+        ///////////////////////////////////////////////////
+        g2=(Graphics2D) jPanel1.getGraphics();//dibujo de golpe el buffer sobre el jPanel
         g2.drawImage(buffer, 0, 0, null);
-    }
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -98,8 +100,21 @@ public class VentanaJuego extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formKeyReleased(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPanel1KeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -125,6 +140,31 @@ public class VentanaJuego extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
+
+    }//GEN-LAST:event_jPanel1KeyPressed
+
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
+        switch(evt.getKeyCode()){
+    case KeyEvent.VK_LEFT : miNave.setPulsadoIzquierda(false); break;
+        case KeyEvent.VK_RIGHT : miNave.setPulsadoDerecha(false); break;
+}
+    }//GEN-LAST:event_formKeyReleased
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_LEFT:
+                miNave.setPulsadoIzquierda(true);
+                break;
+            case KeyEvent.VK_RIGHT:
+                miNave.setPulsadoDerecha(true);
+                break;
+            case KeyEvent.VK_SPACE:
+                miDisparo.posicionaDisparo(miNave);
+                break;
+        }
+    }//GEN-LAST:event_formKeyPressed
 
     /**
      * @param args the command line arguments
