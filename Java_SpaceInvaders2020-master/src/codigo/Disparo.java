@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author Jorge Cisneros
+ * @author Carlos
  */
 public class Disparo {
     Image imagen = null;
@@ -27,7 +27,7 @@ public class Disparo {
     }
     
     public void mueve(){
-         posY--;
+         posY -= 5;
             
     }
 
