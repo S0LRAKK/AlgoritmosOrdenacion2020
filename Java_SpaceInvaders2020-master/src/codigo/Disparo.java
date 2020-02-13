@@ -7,6 +7,8 @@ package codigo;
 
 import java.awt.Image;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 /**
  *
@@ -16,11 +18,14 @@ public class Disparo {
     Image imagen = null;
     public int posX = 0;
     public int posY = 0;
+    Clip sonidoDisparo;
 
     
     public Disparo(){
             try{
                 imagen=ImageIO.read(getClass().getResource("/imagenes/disparo.png"));
+                sonidoDisparo = AudioSystem.getClip();
+                sonidoDisparo.open(AudioSystem.getAudioInputStream(getClass().getResource("/sonidos/laser.wav")));
             }
             catch(Exception e){
             }
